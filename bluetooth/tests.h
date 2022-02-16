@@ -7,7 +7,6 @@
 #include <iostream>
 #include <map>
 #include <regex>
-#include <sdbus-c++/IProxy.h>
 #include <string>
 #include <vector>
 #include <algorithm>
