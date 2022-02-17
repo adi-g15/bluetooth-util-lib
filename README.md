@@ -4,6 +4,8 @@
 * Audio transmission (eg to bluetooth speaker)
 * Audio Receiver (eg. receive audio from mobile and play on internal speaker)
 
+> Additional descriptive comments to be added at end
+
 ## BLE
 
 > First priority

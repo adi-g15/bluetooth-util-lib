@@ -17,3 +17,15 @@ using u8 = uint8_t;
 using u16 = uint16_t;
 using u32 = uint32_t;
 using u64 = uint64_t;
+
+namespace internal {
+/**
+ * @brief Internal Counter, should not be used outside of addCharacteristic and
+ * addService methods
+ *
+ * @tparam ServiceOrCharacteristicType
+ */
+template <typename ServiceOrCharacteristicType> struct Counter {
+    static inline int curr_index;
+};
+} // namespace internal

@@ -9,12 +9,11 @@ CPMAddPackage(
 # Also add BUILD_LIBSYSTEMD ON if want to use on non systemd system
 
 include_directories("../common")
-add_library(common common/service.cpp common/characteristic.cpp)
-add_library(peripheral peripheral.cpp)
+add_library(peripheral peripheral.h common/advertisement.cpp common/characteristic.cpp common/service.cpp common/application.cpp)
 add_library(central central.cpp)
 
 target_link_libraries(central PUBLIC sdbus-c++)
 target_link_libraries(peripheral PUBLIC sdbus-c++)
 
 add_executable(ble main.cpp)
-target_link_libraries(ble PRIVATE common peripheral central)
+target_link_libraries(ble PRIVATE peripheral central)
