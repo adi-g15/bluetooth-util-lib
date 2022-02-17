@@ -4,13 +4,14 @@
  *
  */
 
+#include <algorithm>
 #include <iostream>
 #include <map>
 #include <regex>
 #include <string>
 #include <vector>
-#include <algorithm>
 
+#include "../common/adapter.h"
 #include "sdbus-c++/sdbus-c++.h"
 
 using std::cout, std::endl, std::vector, std::string, std::map;
@@ -23,7 +24,8 @@ const auto ADAPTER_OBJECT_PATH = "/org/bluez/hci0";
  *
  * @param address
  */
-void test_connect_to_device(string address, string adapter_path = "/org/bluez/hci0" ) {
+void test_connect_to_device(string address,
+                            string adapter_path = "/org/bluez/hci0") {
     if (std::regex_match(
             address,
             /*regex pattern to match a valid address, may require updation*/
@@ -37,26 +39,14 @@ void test_connect_to_device(string address, string adapter_path = "/org/bluez/hc
         auto device = sdbus::createProxy("org.bluez", device_path);
         device->callMethod("Connect").onInterface("org.bluez.Device1");
     } else {
-        cout << "Invalid address: " << address << ". Address should be of the form: XX:XX:XX:XX:XX:XX" << endl;
+        cout << "Invalid address: " << address
+             << ". Address should be of the form: XX:XX:XX:XX:XX:XX" << endl;
     }
 }
 
 void test_get_adapter_powered_status() {
-    auto conn = sdbus::createSystemBusConnection();
-
-    // conn->enterEventLoopAsync();
-
-    auto adapter =
-        sdbus::createProxy(*conn, BLUEZ_DBUS_NAME, ADAPTER_OBJECT_PATH);
-
-    // Get if adapter powered on or not
-    sdbus::Variant result;
-    adapter->callMethod("Get")
-        .onInterface("org.freedesktop.DBus.Properties")
-        .withArguments("org.bluez.Adapter1", "Powered")
-        .storeResultsTo(result);
-    std::cout << "Is adapter powered: " << std::boolalpha << result.get<bool>()
-              << std::endl;
+    std::cout << "Is adapter powered: " << std::boolalpha
+              << isAdapterPoweredOn() << std::endl;
 }
 
 void test_print_adapter_details() {
@@ -95,14 +85,8 @@ void test_print_adapter_details() {
 }
 
 void test_turn_on_adapter() {
-    auto hci0_adapter = sdbus::createProxy("org.bluez", "/org/bluez/hci0");
-
     try {
-        hci0_adapter->callMethod("Set")
-            .onInterface("org.freedesktop.DBus.Properties")
-            .withArguments("org.bluez.Adapter1", "Powered",
-                           sdbus::Variant(true));
-
+        tryPoweringOnAdapter();
     } catch (std::exception &e) {
         std::cerr << "ERROR: Failed to power on adapter: " << e.what() << endl;
     }

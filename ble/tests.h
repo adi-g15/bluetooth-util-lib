@@ -19,7 +19,7 @@
 using std::cout, std::endl, std::vector, std::string, std::map;
 
 void test_start_advertising() {
-    turn_on_advertising();
+    turnOnAdvertising();
 }
 
 void test_func() { test_start_advertising(); }

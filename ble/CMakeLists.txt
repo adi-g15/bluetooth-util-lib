@@ -8,6 +8,7 @@ CPMAddPackage(
 	OPTIONS "BUILD_DOC OFF")
 # Also add BUILD_LIBSYSTEMD ON if want to use on non systemd system
 
+include_directories("../common")
 add_library(common common/service.cpp common/characteristic.cpp)
 add_library(peripheral peripheral.cpp)
 add_library(central central.cpp)
