@@ -5,6 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 
 # Should be removed in release
 set(CMAKE_BUILD_TYPE "Debug")
+add_compile_definitions("VERBOSE_DEBUG")
 
 include(cmake/CPM.cmake)
 

@@ -17,7 +17,8 @@ class Application {
                 const std::string &application_object_path);
 
     template <typename ServiceType, class... Args>
-    ServiceType &addService(std::string UUID, Args... args) {
+    ServiceType &addService(unsigned int index, std::string UUID,
+                            Args... args) {
         /* Checks if ServiceType provides a constructor with the signature as in
          * the below message */
         static_assert(
@@ -36,9 +37,9 @@ class Application {
                       "Invalid ServiceType: Services should inherit from the "
                       "`Service` base class");
 
-        auto service = new ServiceType(
-            connection, this->application->getObjectPath(),
-            internal::Counter<ServiceType>::curr_index++, UUID, args...);
+        auto service =
+            new ServiceType(connection, this->application->getObjectPath(),
+                            index, UUID, args...);
         services.push_back(service);
 
         // Note: @adig This pattern may cause dangling references, but
@@ -47,6 +48,7 @@ class Application {
     }
 
     sdbus::ObjectPath getObjectPath() const;
+    void registerWithGattManager(std::string adapter_path = "") const;
 
     virtual void onInterfacesAdded(
         const sdbus::ObjectPath &object_path,

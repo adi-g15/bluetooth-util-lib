@@ -1,8 +1,11 @@
+#include <chrono>
 #include <iostream>
 #include <map>
+#include <thread>
 
 #include "../../common/adapter.h"
 #include "advertisement.h"
+#include "sdbus-c++/Types.h"
 
 using std::cout, std::cerr, std::endl;
 
@@ -12,10 +15,17 @@ void Advertisement::turnOnAdvertising() {
      * 1. adapter-api.txt -> Discoverable[=true]
      * 2. advertising-api.txt -> LEAdvertisement1, LEAdvertisementManager1
      */
+
+    // This is NEEDED, since after we call RegisterAdvertisement, bluez in
+    // return calls `GetAll` method on the passed advertisement object, so we
+    // need a event loop to run asynchronously to reply, WHILE WE ARE WAITING
+    // for bluez's reply which in turn requires our application to reply to it
+    connection.enterEventLoopAsync();
+
     sdbus::createProxy(connection, "org.bluez", adapter_object_path)
         ->callMethod("RegisterAdvertisement")
         .onInterface("org.bluez.LEAdvertisingManager1")
-        .withArguments(ad->getObjectPath(),
+        .withArguments(sdbus::ObjectPath(ad->getObjectPath()),
                        std::map<std::string, sdbus::Variant>());
 
     cout << "Successfully registered advertisement: " << ad->getObjectPath()
@@ -56,6 +66,8 @@ void Advertisement::turnOnAdvertising() {
         "org.freedesktop.DBus.Properties", "PropertiesChanged",
         [](sdbus::Signal &s) { cout << "called" << s.getPath() << endl; });
 
+    // Leave previous async loop, and do a Blocking wait afterwards
+    connection.leaveEventLoop();
     // Blocking wait
     connection.enterEventLoop();
 }
@@ -71,7 +83,7 @@ void Advertisement::turnOffAdvertising() {
     sdbus::createProxy(connection, "org.bluez", adapter_object_path)
         ->callMethod("UnregisterAdvertisement")
         .onInterface("org.bluez.LEAdvertisingManager1")
-        .withArguments(ad->getObjectPath());
+        .withArguments(sdbus::ObjectPath(ad->getObjectPath()));
 }
 
 /**
@@ -135,6 +147,11 @@ Advertisement::Advertisement(sdbus::IConnection &connection,
         .withGetter([]() { return "Pehchana ?"; });
 
     ad->finishRegistration();
+
+#ifdef VERBOSE_DEBUG
+    std::cout << "Created advertisement at path: " << ad->getObjectPath()
+              << std::endl;
+#endif
 }
 
 /**

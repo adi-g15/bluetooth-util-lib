@@ -57,7 +57,7 @@ class Service {
      * TODO: Incomplete doc
      */
     template <typename CharacteristicType, class... Args>
-    CharacteristicType &addCharacteristic(std::string UUID, Args... args) {
+    CharacteristicType &addCharacteristic(unsigned int index, std::string UUID, Args... args) {
         static_assert(
             std::is_constructible_v<CharacteristicType, decltype(connection),
                                     std::string, unsigned int, std::string,
@@ -76,7 +76,7 @@ class Service {
 
         auto characteristic = new CharacteristicType(
             connection, service->getObjectPath(),
-            internal::Counter<CharacteristicType>::curr_index++, UUID, args...);
+            index, UUID, args...);
         characteristics.push_back(characteristic);
 
         return *characteristic;

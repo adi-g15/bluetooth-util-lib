@@ -9,6 +9,7 @@
  *
  */
 
+#include <iostream>
 #include <string>
 #include <type_traits>
 
@@ -21,8 +22,8 @@ using std::string;
 Service::Service(sdbus::IConnection &connection, string application_path,
                  unsigned int index)
     : connection(connection) {
-    auto service = sdbus::createObject(
-        connection, application_path + "/service" + std::to_string(index));
+    service = sdbus::createObject(connection, application_path + "/service" +
+                                                  std::to_string(index));
 
     const auto GATT_SERVICE_IFACE = "org.bluez.GattService1";
 
@@ -34,9 +35,16 @@ Service::Service(sdbus::IConnection &connection, string application_path,
         .withGetter([]() { return false; });
     service->registerProperty("Device")
         .onInterface(GATT_SERVICE_IFACE)
-        .withGetter([&application_path]() { return application_path; });
+        .withGetter([application_path = std::move(application_path)]() {
+            return application_path;
+        });
 
     service->finishRegistration();
+
+#ifdef VERBOSE_DEBUG
+    std::cout << "Created service at path: " << service->getObjectPath()
+              << std::endl;
+#endif
 }
 
 Service::~Service() {

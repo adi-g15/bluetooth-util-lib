@@ -5,22 +5,31 @@
  */
 #pragma once
 
+#include <alloca.h>
+#include <chrono>
 #include <iostream>
+#include <memory>
+#include <thread>
+#include <vector>
 
+#include "common/advertisement.h"
 #include "common/characteristic.h"
 #include "common/service.h"
 #include "peripheral.h"
+#include "sdbus-c++/IConnection.h"
+#include "sdbus-c++/IProxy.h"
 #include "sdbus-c++/sdbus-c++.h"
 
 using std::cout, std::endl, std::vector, std::string, std::map;
+
+/* Intentionally, Almost all allocations in this file are heap allocated, maybe
+ * not deleted either, if needed they are deleted at end of scope */
 
 class MyApplication : public Application {
   public:
     MyApplication(sdbus::IConnection &connection,
                   const std::string &application_object_path)
-        : Application(connection, application_object_path) {
-        cout << "Created myapplication\n";
-    }
+        : Application(connection, application_object_path) {}
 
     void onInterfacesAdded(
         const sdbus::ObjectPath &object_path,
@@ -86,9 +95,8 @@ class MyCorrectService : public Service {
     };
 };
 
-void test_register_application() {
-    auto conn = sdbus::createSystemBusConnection("me.adig.iotiot");
-    auto myapp = MyApplication(*conn, "/app");
+void test_register_application(sdbus::IConnection &conn) {
+    auto myapp = new MyApplication(conn, "/app");
 
     /* This service will intentionally fail to compile */
     // auto &service1 = myapp.addService<MyFailingService>("9RFE87NNS");
@@ -96,40 +104,56 @@ void test_register_application() {
     //    MyFailingService::MyFailingCharacteristic
     // >("CHAR11");
 
-    auto &service2 = myapp.addService<MyCorrectService>("A8FNDF33FD");
+    auto &service2 = myapp->addService<MyCorrectService>(0, "A8FNDF33FD");
 
     service2.addCharacteristic<MyCorrectService::MyCorrectCharacteristic1>(
-        "CHAR11");
+        0, "CHAR11");
     // Will intentionally fail
     // service2.addCharacteristic<MyCorrectService::MyFailingCharacteristic2>(
-    //     "CHAR12");
+    //     2, "CHAR12");
     service2.addCharacteristic<MyCorrectService::MyCorrectCharacteristic3>(
-        "CHAR12");
+        1, "CHAR12");
 
-    cout << "Created application at path: " << myapp.getObjectPath() << endl;
+    cout << "Created application at path: " << myapp->getObjectPath() << endl;
+
+    myapp->registerWithGattManager();
+
+    cout << "Registered application: " << myapp->getObjectPath()
+         << " with GattManager" << endl;
 }
 
-void test_start_advertising() {
-    auto conn = sdbus::createSystemBusConnection("me.adig.iotiot");
-    conn->enterEventLoopAsync();
+void test_start_advertising(sdbus::IConnection &conn) {
+    std::thread([&conn]() {
+        std::cout << "[Testcase] Will stop advertising after 1 seconds, for "
+                     "next tests to run"
+                  << endl;
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+        std::cout << "Times up!" << endl;
+        conn.leaveEventLoop();
+    }).detach();
 
-    auto root_obj = sdbus::createObject(*conn, "/");
+    // ~/bluez-5.63/doc/advertising-api.txt
+    auto advertisement = new Advertisement(conn);
+    advertisement->turnOnAdvertising();
+}
+
+void test_create_root_object(sdbus::IConnection &conn) {
+    auto root_obj = sdbus::createObject(conn, "/");
     root_obj->registerProperty("name")
         .onInterface("me.adig.DBus.Properties")
         .withGetter([]() { return "gupta"; });
     root_obj->finishRegistration();
 
-    // ~/bluez-5.63/doc/advertising-api.txt
-    Advertisement advertisement(*conn);
-    advertisement.turnOnAdvertising();
+    std::cout << "Can verify that the root object has been exported :)" << endl;
+    std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
 void test_func() {
-    test_start_advertising();
+    auto conn = sdbus::createSystemBusConnection("me.adig.iotiot");
 
-    // Before leaving, resume the event loop in another thread to not miss
-    // further signals,call
-    // conn->enterEventLoopAsync();
+    test_create_root_object(*conn);
+    test_start_advertising(*conn);
+    test_register_application(*conn);
 
-    test_register_application();
+    conn->enterEventLoop();
 }

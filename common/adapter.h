@@ -41,6 +41,7 @@ static std::string get_advertising_capable_adapter_path() {
     auto results = std::map<
         sdbus::ObjectPath,
         std::map<std::string, std::map<std::string, sdbus::Variant>>>();
+    // Note: This creates a temporary connection, and a new thread for a event loop
     sdbus::createProxy("org.bluez", "/")
         ->callMethod("GetManagedObjects")
         .onInterface("org.freedesktop.DBus.ObjectManager")

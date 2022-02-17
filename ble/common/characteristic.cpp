@@ -74,13 +74,15 @@ Characteristic::Characteristic(sdbus::IConnection &connection,
 
     characteristic->registerProperty("Service")
         .onInterface(CHARACTERISTIC_IFACE)
-        .withGetter([&service_object_path]() { return service_object_path; });
+        .withGetter([service_object = std::move(service_object_path)]() {
+            return service_object;
+        });
 
     /* Ignoring 'optional' properties such as `WriteAcquired` etc. */
 
     characteristic->registerProperty("Flags")
         .onInterface(CHARACTERISTIC_IFACE)
-        .withGetter([&flags]() { return flags; });
+        .withGetter([flags = std::move(flags)]() { return flags; });
 
     characteristic->registerProperty("MTU")
         .onInterface(CHARACTERISTIC_IFACE)
@@ -90,6 +92,11 @@ Characteristic::Characteristic(sdbus::IConnection &connection,
         });
 
     characteristic->finishRegistration();
+
+#ifdef VERBOSE_DEBUG
+    std::cout << "Created characteristic at path: "
+              << characteristic->getObjectPath() << std::endl;
+#endif
 }
 
 std::string Characteristic::getObjectPath() const {
