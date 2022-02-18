@@ -54,7 +54,7 @@ class MyCorrectService : public Service {
     MyCorrectService(sdbus::IConnection &connection,
                      std::string application_path, unsigned int index,
                      std::string UUID)
-        : Service(connection, application_path, 0) {}
+        : Service(connection, application_path, 0, UUID) {}
 
     struct MyCorrectCharacteristic1 : public Characteristic {
         MyCorrectCharacteristic1(sdbus::IConnection &connection,
@@ -96,7 +96,7 @@ class MyCorrectService : public Service {
 };
 
 void test_register_application(sdbus::IConnection &conn) {
-    auto myapp = new MyApplication(conn, "/app");
+    auto myapp = new MyApplication(conn, "/com/example");
 
     /* This service will intentionally fail to compile */
     // auto &service1 = myapp.addService<MyFailingService>("9RFE87NNS");
@@ -104,18 +104,19 @@ void test_register_application(sdbus::IConnection &conn) {
     //    MyFailingService::MyFailingCharacteristic
     // >("CHAR11");
 
-    auto &service2 = myapp->addService<MyCorrectService>(0, "A8FNDF33FD");
+    auto &service2 = myapp->addService<MyCorrectService>(0, "0000180d-0000-1000-8000-00805f9b34fb");
 
     service2.addCharacteristic<MyCorrectService::MyCorrectCharacteristic1>(
-        0, "CHAR11");
+        0, "00002a37-0000-1000-8000-00805f9b34fb");
     // Will intentionally fail
     // service2.addCharacteristic<MyCorrectService::MyFailingCharacteristic2>(
     //     2, "CHAR12");
     service2.addCharacteristic<MyCorrectService::MyCorrectCharacteristic3>(
-        1, "CHAR12");
+        1, "00002a38-0000-1000-8000-00805f9b34fb");
 
     cout << "Created application at path: " << myapp->getObjectPath() << endl;
 
+    // conn.enterEventLoop();
     myapp->registerWithGattManager();
 
     cout << "Registered application: " << myapp->getObjectPath()

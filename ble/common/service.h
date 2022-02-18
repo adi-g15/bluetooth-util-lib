@@ -93,7 +93,7 @@ class Service {
      * should be child of this service object
      */
     Service(sdbus::IConnection &connection, std::string application_path,
-            unsigned int index);
+            unsigned int index, std::string UUID);
 
     virtual ~Service();
 };

@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "characteristic.h"
+#include "sdbus-c++/Types.h"
 
 using std::vector, std::string, std::cerr, std::endl;
 
@@ -70,12 +71,19 @@ Characteristic::Characteristic(sdbus::IConnection &connection,
     /*Properties according to bluez/docs/gatt-api.txt*/
     characteristic->registerProperty("UUID")
         .onInterface(CHARACTERISTIC_IFACE)
-        .withGetter([]() { return ""; });
+        .withGetter([uuid = UUID]() { return uuid; });
 
     characteristic->registerProperty("Service")
         .onInterface(CHARACTERISTIC_IFACE)
         .withGetter([service_object = std::move(service_object_path)]() {
-            return service_object;
+            return sdbus::ObjectPath(service_object);
+        });
+
+    characteristic->registerProperty("Descriptors")
+        .onInterface(CHARACTERISTIC_IFACE)
+        .withGetter([]() {
+            // TODO: Handle case when descriptors supported later
+            return std::vector<sdbus::ObjectPath>();
         });
 
     /* Ignoring 'optional' properties such as `WriteAcquired` etc. */
@@ -83,13 +91,6 @@ Characteristic::Characteristic(sdbus::IConnection &connection,
     characteristic->registerProperty("Flags")
         .onInterface(CHARACTERISTIC_IFACE)
         .withGetter([flags = std::move(flags)]() { return flags; });
-
-    characteristic->registerProperty("MTU")
-        .onInterface(CHARACTERISTIC_IFACE)
-        .withGetter([]() {
-            /*TODO*/
-            return uint16_t(0);
-        });
 
     characteristic->finishRegistration();
 
