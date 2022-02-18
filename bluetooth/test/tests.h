@@ -5,43 +5,52 @@
  */
 
 #include <algorithm>
+#include <cctype>
+#include <chrono>
+#include <cstdint>
+#include <cstdlib>
+#include <exception>
+#include <ios>
 #include <iostream>
 #include <map>
+#include <ostream>
 #include <regex>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
-#include "../common/adapter.h"
+#include "adapter.h"
+#include "bluetooth/functions.h"
+
 #include "sdbus-c++/sdbus-c++.h"
 
-using std::cout, std::endl, std::vector, std::string, std::map;
+using std::cout, std::cin, std::endl, std::string, std::map, std::vector;
 
 const auto BLUEZ_DBUS_NAME = "org.bluez";
-const auto ADAPTER_OBJECT_PATH = "/org/bluez/hci0";
+const auto DEFAULT_ADAPTER_PATH = "/org/bluez/hci0";
 
 /**
- * @note PRE-REQUISIT: Device must be paired
+ * @note PREREQUISIT: Device must be paired
  *
  * @param address
  */
 void test_connect_to_device(string address,
-                            string adapter_path = "/org/bluez/hci0") {
-    if (std::regex_match(
-            address,
-            /*regex pattern to match a valid address, may require updation*/
-            std::regex(
-                "([\\[0-9\\]\\[A-F\\]]{2}:){5}[\\[0-9\\]\\[A-F\\]]{2}"))) {
+                            string adapter_path = DEFAULT_ADAPTER_PATH) {
+    connect_to_device_using_address(address, adapter_path);
+}
 
-        cout << "Matched: " << address << endl;
-        std::replace(address.begin(), address.end(), ':', '_');
+/**
+ * @note PREREQUISIT: Device must be connected
+ *
+ * @param address
+ */
+void test_disconnect_from_device(string address,
+                                 string adapter_path = DEFAULT_ADAPTER_PATH) {
+    disconnect_from_device_using_address(address, adapter_path);
+}
 
-        auto device_path = adapter_path + "/dev_" + address;
-        auto device = sdbus::createProxy("org.bluez", device_path);
-        device->callMethod("Connect").onInterface("org.bluez.Device1");
-    } else {
-        cout << "Invalid address: " << address
-             << ". Address should be of the form: XX:XX:XX:XX:XX:XX" << endl;
-    }
+void test_get_device_address(std::string device_name) {
+    get_device_address_by_name(device_name);
 }
 
 void test_get_adapter_powered_status() {
@@ -50,7 +59,7 @@ void test_get_adapter_powered_status() {
 }
 
 void test_print_adapter_details() {
-    auto adapter = sdbus::createProxy(BLUEZ_DBUS_NAME, ADAPTER_OBJECT_PATH);
+    auto adapter = sdbus::createProxy(BLUEZ_DBUS_NAME, DEFAULT_ADAPTER_PATH);
 
     // GetAll
     auto dict = std::map<std::string, sdbus::Variant>();
@@ -103,7 +112,7 @@ void test_get_all_managed_objects() {
     cout << "Managed Objects:\n";
     for (auto &p : result) {
         cout << p.first << ": ";
-        if (p.first == "/org/bluez/hci0") {
+        if (p.first == DEFAULT_ADAPTER_PATH) {
             cout << "Adapter";
         } else if (p.first.find("/org/bluez/hci0/dev_") == 0 &&
                    p.first.length() ==
@@ -126,15 +135,24 @@ void test_get_all_managed_objects() {
     }
 }
 
-void test_look_for_new_devices() {}
+void test_look_for_new_devices() {
+    // TODO
+}
+
+void test_send_file() { sendFile("30:4B:07:72:25:A4", "/etc/fstab"); }
 
 void test_func() {
     test_get_adapter_powered_status();
     test_turn_on_adapter();
     test_print_adapter_details();
     test_get_all_managed_objects();
+
+    test_get_device_address("Rockerz 450");
     test_connect_to_device("11:11:22:AF:5F:70");
+    test_disconnect_from_device("11:11:22:AF:5F:70");
 
     // blocking
     test_look_for_new_devices();
+
+    test_send_file();
 }
