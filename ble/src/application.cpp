@@ -17,18 +17,6 @@ Application::Application(sdbus::IConnection &connection,
     application = sdbus::createObject(connection, application_object_path);
     application->addObjectManager();
 
-    // OM -> ObjectManager
-    // const auto OM_INTERFACE_NAME = "org.freedesktop.DBus.ObjectManager";
-
-    // application->registerMethod("GetManagedObjects2")
-    //     .onInterface(OM_INTERFACE_NAME)
-    //     .implementedAs([]() {
-    //         return std::map<
-    //             sdbus::ObjectPath,
-    //             std::map<std::string, std::map<std::string,
-    //             sdbus::Variant>>>();
-    //     });
-
     application->finishRegistration();
 
 #ifdef VERBOSE_DEBUG

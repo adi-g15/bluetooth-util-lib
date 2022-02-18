@@ -5,6 +5,7 @@ project(bluetooth)
 # C++17 is required to build this library
 set(CMAKE_CXX_STANDARD 17)
 
+include(../cmake/CPM.cmake)
 CPMAddPackage(
 	GITHUB_REPOSITORY Kistler-Group/sdbus-cpp
 	VERSION 1.1.0

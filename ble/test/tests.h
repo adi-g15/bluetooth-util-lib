@@ -12,12 +12,11 @@
 #include <thread>
 #include <vector>
 
-#include "common/advertisement.h"
-#include "common/characteristic.h"
-#include "common/service.h"
-#include "peripheral.h"
-#include "sdbus-c++/IConnection.h"
-#include "sdbus-c++/IProxy.h"
+#include "ble/advertisement.h"
+#include "ble/characteristic.h"
+#include "ble/peripheral.h"
+#include "ble/service.h"
+
 #include "sdbus-c++/sdbus-c++.h"
 
 using std::cout, std::endl, std::vector, std::string, std::map;
@@ -104,7 +103,8 @@ void test_register_application(sdbus::IConnection &conn) {
     //    MyFailingService::MyFailingCharacteristic
     // >("CHAR11");
 
-    auto &service2 = myapp->addService<MyCorrectService>(0, "0000180d-0000-1000-8000-00805f9b34fb");
+    auto &service2 = myapp->addService<MyCorrectService>(
+        0, "0000180d-0000-1000-8000-00805f9b34fb");
 
     service2.addCharacteristic<MyCorrectService::MyCorrectCharacteristic1>(
         0, "00002a37-0000-1000-8000-00805f9b34fb");

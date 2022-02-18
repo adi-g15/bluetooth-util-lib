@@ -3,9 +3,10 @@
 #include <map>
 #include <thread>
 
-#include "../../common/adapter.h"
+#include "adapter.h"
 #include "advertisement.h"
-#include "sdbus-c++/Types.h"
+
+#include "sdbus-c++/sdbus-c++.h"
 
 using std::cout, std::cerr, std::endl;
 

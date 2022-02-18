@@ -1,5 +1,7 @@
-#include "tests.h"
+#ifndef VERBOSE_DEBUG
+#define VERBOSE_DEBUG
+#endif
 
-int main() {
-    test_func();
-}
+#include "test/tests.h"
+
+int main() { test_func(); }
