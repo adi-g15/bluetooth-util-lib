@@ -126,9 +126,9 @@ void sendFile(const string &remote_device_address,
             cout << p.second.get<string>();
         } else if (type == "u" || type == "y" || type == "n" || type == "q" ||
                    type == "i" || type == "u" || type == "x") {
-            cout << p.second.get<int64_t>();
+            cout << p.second.get<i64>();
         } else if (type == "t") {
-            cout << p.second.get<uint64_t>();
+            cout << p.second.get<u64>();
         } else if (type == "b") {
             cout << std::boolalpha << p.second.get<bool>();
         } else if (type == "as") {

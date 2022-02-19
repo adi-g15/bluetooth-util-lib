@@ -40,6 +40,7 @@
 
 * Bluetooth
   1. [Connect to device](#connect-to-device)
+  2. [Send file](#send-file)
 
 * Miscellaneous
   1. [Create a object](#create-a-object)

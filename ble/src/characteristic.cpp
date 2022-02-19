@@ -52,10 +52,10 @@ Characteristic::Characteristic(sdbus::IConnection &connection,
     characteristic->registerMethod("WriteValue")
         .onInterface(CHARACTERISTIC_IFACE)
         .withInputParamNames("value", "options")
-        .implementedAs([this](vector<uint8_t> value,
-                              std::map<string, sdbus::Variant> options) {
-            return this->WriteValue(value, options);
-        })
+        .implementedAs(
+            [this](vector<u8> value, std::map<string, sdbus::Variant> options) {
+                return this->WriteValue(value, options);
+            })
         .withNoReply();
 
     characteristic->registerMethod("StartNotify")
@@ -102,4 +102,23 @@ Characteristic::Characteristic(sdbus::IConnection &connection,
 
 std::string Characteristic::getObjectPath() const {
     return characteristic->getObjectPath();
+}
+
+CharacteristicProxy::CharacteristicProxy(sdbus::IConnection &connection,
+                                         std::string path)
+    : _proxy(sdbus::createProxy(connection, "org.bluez", path)) {}
+
+/* ReadValue and WriteValue functions provided by the characteristic */
+std::vector<u8> CharacteristicProxy::ReadValue(
+    std::map<std::string, sdbus::Variant> options) const {
+/*TODO*/
+}
+
+void CharacteristicProxy::WriteValue(
+    std::vector<u8> value, std::map<std::string, sdbus::Variant> options) {
+/*TODO*/
+}
+
+std::string CharacteristicProxy::getPath() const {
+    return _proxy->getObjectPath();
 }

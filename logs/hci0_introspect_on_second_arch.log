@@ -1,0 +1,81 @@
+node /org/bluez/hci0 {
+  interface org.freedesktop.DBus.Introspectable {
+    methods:
+      Introspect(out s xml);
+    signals:
+    properties:
+  };
+  interface org.bluez.Adapter1 {
+    methods:
+      StartDiscovery();
+      SetDiscoveryFilter(in  a{sv} properties);
+      StopDiscovery();
+      RemoveDevice(in  o device);
+      GetDiscoveryFilters(out as filters);
+    signals:
+    properties:
+      readonly s Address = 'AC:67:5D:EF:6F:EA';
+      readonly s AddressType = 'public';
+      readonly s Name = 'BlueZ 5.63';
+      readwrite s Alias = 'BlueZ 5.63';
+      readonly u Class = 268;
+      readwrite b Powered = true;
+      readwrite b Discoverable = false;
+      readwrite u DiscoverableTimeout = 180;
+      readwrite b Pairable = false;
+      readwrite u PairableTimeout = 0;
+      readonly b Discovering = false;
+      readonly as UUIDs = ['00001801-0000-1000-8000-00805f9b34fb', '00001800-0000-1000-8000-00805f9b34fb', '00001200-0000-1000-8000-00805f9b34fb', '0000110c-0000-1000-8000-00805f9b34fb', '0000110e-0000-1000-8000-00805f9b34fb', '0000180a-0000-1000-8000-00805f9b34fb'];
+      readonly s Modalias = 'usb:v1D6Bp0246d053F';
+      readonly as Roles = ['central', 'peripheral'];
+      readonly as ExperimentalFeatures;
+  };
+  interface org.freedesktop.DBus.Properties {
+    methods:
+      Get(in  s interface,
+          in  s name,
+          out v value);
+      Set(in  s interface,
+          in  s name,
+          in  v value);
+      GetAll(in  s interface,
+             out a{sv} properties);
+    signals:
+      PropertiesChanged(s interface,
+                        a{sv} changed_properties,
+                        as invalidated_properties);
+    properties:
+  };
+  interface org.bluez.GattManager1 {
+    methods:
+      RegisterApplication(in  o application,
+                          in  a{sv} options);
+      UnregisterApplication(in  o application);
+    signals:
+    properties:
+  };
+  interface org.bluez.Media1 {
+    methods:
+      RegisterEndpoint(in  o endpoint,
+                       in  a{sv} properties);
+      UnregisterEndpoint(in  o endpoint);
+      RegisterPlayer(in  o player,
+                     in  a{sv} properties);
+      UnregisterPlayer(in  o player);
+      RegisterApplication(in  o application,
+                          in  a{sv} options);
+      UnregisterApplication(in  o application);
+    signals:
+    properties:
+  };
+  interface org.bluez.NetworkServer1 {
+    methods:
+      Register(in  s uuid,
+               in  s bridge);
+      Unregister(in  s uuid);
+    signals:
+    properties:
+  };
+  node dev_30_4B_07_72_25_A4 {
+  };
+};

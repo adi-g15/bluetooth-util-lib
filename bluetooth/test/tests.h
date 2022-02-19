@@ -19,7 +19,9 @@
 #include <string>
 #include <vector>
 
-#include "adapter.h"
+#include "common/declarations.h"
+#include "common/adapter.h"
+
 #include "bluetooth/functions.h"
 
 #include "sdbus-c++/sdbus-c++.h"
@@ -75,7 +77,7 @@ void test_print_adapter_details() {
         if (type == "s") {
             cout << p.second.get<std::string>();
         } else if (type == "u") {
-            cout << p.second.get<uint32_t>();
+            cout << p.second.get<u32>();
         } else if (type == "b") {
             cout << std::boolalpha << p.second.get<bool>();
         } else if (type == "as") {

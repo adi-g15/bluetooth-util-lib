@@ -12,7 +12,11 @@
 #include <thread>
 #include <vector>
 
+#include "common/adapter.h"
+#include "common/declarations.h"
+
 #include "ble/advertisement.h"
+#include "ble/central.h"
 #include "ble/characteristic.h"
 #include "ble/peripheral.h"
 #include "ble/service.h"
@@ -61,13 +65,13 @@ class MyCorrectService : public Service {
                                  std::string UUID)
             : Characteristic(connection, service_path, index, UUID) {}
 
-        std::vector<uint8_t> ReadValue(
+        std::vector<u8> ReadValue(
             std::map<std::string, sdbus::Variant> options) const override {
             return {};
         }
 
         void
-        WriteValue(std::vector<uint8_t> value,
+        WriteValue(std::vector<u8> value,
                    std::map<std::string, sdbus::Variant> options) override {
             cout << "Kuchh write karo idhar\n";
         }
@@ -81,13 +85,13 @@ class MyCorrectService : public Service {
                                  std::string UUID)
             : Characteristic(connection, service_path, index, UUID) {}
 
-        std::vector<uint8_t> ReadValue(
+        std::vector<u8> ReadValue(
             std::map<std::string, sdbus::Variant> options) const override {
             return {};
         }
 
         void
-        WriteValue(std::vector<uint8_t> value,
+        WriteValue(std::vector<u8> value,
                    std::map<std::string, sdbus::Variant> options) override {
             cout << "Kuchh write karo idhar\n";
         }
@@ -149,12 +153,36 @@ void test_create_root_object(sdbus::IConnection &conn) {
     std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
+void test_start_ble_scan(sdbus::IConnection &conn) {
+    cout << "1\n";
+    startScanningForBLEDevices();
+    cout << "2\n";
+    startScanningForBLEDevices();
+    cout << "3\n";
+    getAvailableBLEPeripherals();
+    cout << "4\n";
+}
+
+void test_turn_on_adapter() {
+    try {
+        tryPoweringOnAdapter();
+    } catch (std::exception &e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+}
+
 void test_func() {
     auto conn = sdbus::createSystemBusConnection("me.adig.iotiot");
 
+    test_turn_on_adapter();
     test_create_root_object(*conn);
+
+    // peripheral
     test_start_advertising(*conn);
     test_register_application(*conn);
+
+    // central
+    test_start_ble_scan(*conn);
 
     conn->enterEventLoop();
 }

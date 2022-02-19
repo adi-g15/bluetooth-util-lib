@@ -15,22 +15,26 @@ CPMAddPackage(
 # For common/adapter.h
 include_directories("../common")
 add_library(peripheral
-	"include/ble/peripheral.h"
-	"include/ble/advertisement.h" "src/advertisement.cpp"
-	"include/ble/characteristic.h" "src/characteristic.cpp"
-	"include/ble/service.h" "src/service.cpp"
-	"include/ble/application.h" "src/application.cpp"
-	"include/ble/declarations.h")
+	"src/advertisement.cpp"
+	"src/characteristic.cpp"
+	"src/service.cpp"
+	"src/application.cpp")
 add_library(central
 	"include/ble/central.h")
+target_include_directories(peripheral PRIVATE ..)
 target_include_directories(peripheral PRIVATE include/ble/)
+target_include_directories(central PRIVATE ..)
 target_include_directories(central PRIVATE include/ble/)
-target_link_libraries(peripheral PRIVATE sdbus-c++)
-target_link_libraries(central PRIVATE sdbus-c++)
+target_link_libraries(peripheral PUBLIC sdbus-c++)
+target_link_libraries(central PUBLIC sdbus-c++)
 
 add_library(ble "include/ble/peripheral.h" "include/ble/central.h")
 target_include_directories(ble PUBLIC include/)
-target_link_libraries(ble PRIVATE peripheral central sdbus-c++)
+target_link_libraries(ble PRIVATE peripheral central)
+target_link_libraries(ble PUBLIC sdbus-c++)
 
 add_executable(test_ble main.cpp test/tests.h)
+target_include_directories(test_ble PUBLIC "../")
 target_link_libraries(test_ble PRIVATE ble sdbus-c++)
+
+# vim: shiftwidth=4

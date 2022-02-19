@@ -8,3 +8,5 @@ set(CMAKE_BUILD_TYPE "Debug")
 
 add_subdirectory(bluetooth)
 add_subdirectory(ble)
+
+# vim: shiftwidth=4

@@ -1,0 +1,31 @@
+Is adapter powered: true
+* Address: AC:67:5D:EF:6F:EA
+* AddressType: public
+* Alias: BlueZ 5.63
+* Class: 268
+* Discoverable: false
+* DiscoverableTimeout: 180
+* Discovering: false
+* Modalias: usb:v1D6Bp0246d053F
+* Name: BlueZ 5.63
+* Pairable: false
+* PairableTimeout: 0
+* Powered: true
+* Roles: [ central, peripheral,  ]
+* UUIDs: [ 00001801-0000-1000-8000-00805f9b34fb, 00001800-0000-1000-8000-00805f9b34fb, 00001200-0000-1000-8000-00805f9b34fb, 0000110c-0000-1000-8000-00805f9b34fb, 0000110e-0000-1000-8000-00805f9b34fb, 0000180a-0000-1000-8000-00805f9b34fb,  ]
+Managed Objects:
+/org/bluez: Ignore
+/org/bluez/hci0: Adapter
+/org/bluez/hci0/dev_30_4B_07_72_25_A4: Device
+	Name: "motorola one power"
+	Address: "30:4B:07:72:25:A4"
+	Interfaces:
+		org.bluez.Device1
+		org.bluez.MediaControl1
+		org.bluez.Network1
+		org.freedesktop.DBus.Introspectable
+		org.freedesktop.DBus.Properties
+
+ERROR: Couldn't find a device with matching name: rockerz 450
+Matched: 11:11:22:AF:5F:70
+[Disconnect] Matched: 11:11:22:AF:5F:70
