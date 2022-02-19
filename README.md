@@ -28,6 +28,12 @@
 2. List all services and characteristics
 3. Read/Write Characteristics
 
+## Tools
+
+Used this android app to try connecting with the server: https://play.google.com/store/apps/details?id=no.nordicsemi.android.mcp
+
+Follow on screen instructions and start scanning
+
 ## Example Usage
 
 > Mai bas tests se idhar copy kr rha hu, sayad only sdbus wale programs ho skte is library ko use bhi na krte ho
