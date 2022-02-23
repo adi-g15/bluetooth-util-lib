@@ -13,6 +13,7 @@
  */
 class Advertisement {
     std::string adapter_object_path;
+    std::string advertised_name = "A BLE G";
     sdbus::IConnection &connection;
     std::unique_ptr<sdbus::IObject> ad;
 
@@ -22,6 +23,8 @@ class Advertisement {
 
     void turnOnAdvertising();
     void turnOffAdvertising();
+
+    void setAdvertisedName(const std::string& new_name);
 
     ~Advertisement();
 };

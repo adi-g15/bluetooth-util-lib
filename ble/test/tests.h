@@ -2,6 +2,12 @@
  * @file tests.h
  * @brief Not automated tests, just manually checking if it 'not' fails
  *
+ * @bug Sometime it will stuck at "Can verify that the root object has been
+exported :) [Testcase] Will stop advertising after 1 seconds, for next tests to
+run Times up!
+"
+ * This is probably due to a leaveEventLoop() signal getting un noticed in
+multi threading
  */
 #pragma once
 
@@ -129,16 +135,17 @@ void test_register_application(sdbus::IConnection &conn) {
 
 void test_start_advertising(sdbus::IConnection &conn) {
     std::thread([&conn]() {
-        std::cout << "[Testcase] Will stop advertising after 1 seconds, for "
+        std::cout << "[Testcase] Will stop advertising after 6 seconds, for "
                      "next tests to run"
                   << endl;
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        std::cout << "Times up!" << endl;
+        std::this_thread::sleep_for(std::chrono::seconds(6));
+        cout << "Changing name" << endl;
         conn.leaveEventLoop();
     }).detach();
 
     // ~/bluez-5.63/doc/advertising-api.txt
     auto advertisement = new Advertisement(conn);
+    advertisement->setAdvertisedName("Naya naam");
     advertisement->turnOnAdvertising();
 }
 
@@ -154,13 +161,16 @@ void test_create_root_object(sdbus::IConnection &conn) {
 }
 
 void test_start_ble_scan(sdbus::IConnection &conn) {
+    startScanningForBLEDevices();
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     cout << "1\n";
-    startScanningForBLEDevices();
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     cout << "2\n";
-    startScanningForBLEDevices();
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     cout << "3\n";
-    getAvailableBLEPeripherals();
+    std::this_thread::sleep_for(std::chrono::seconds(1));
     cout << "4\n";
+    getAvailableBLEPeripherals();
 }
 
 void test_turn_on_adapter() {

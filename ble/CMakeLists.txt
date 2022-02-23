@@ -20,7 +20,7 @@ add_library(peripheral
 	"src/service.cpp"
 	"src/application.cpp")
 add_library(central
-	"include/ble/central.h")
+	"src/central.cpp")
 target_include_directories(peripheral PRIVATE ..)
 target_include_directories(peripheral PRIVATE include/ble/)
 target_include_directories(central PRIVATE ..)

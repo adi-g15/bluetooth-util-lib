@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "characteristic.h"
+#include "sdbus-c++/IProxy.h"
 #include "sdbus-c++/Types.h"
 
 using std::vector, std::string, std::cerr, std::endl;
@@ -111,12 +112,24 @@ CharacteristicProxy::CharacteristicProxy(sdbus::IConnection &connection,
 /* ReadValue and WriteValue functions provided by the characteristic */
 std::vector<u8> CharacteristicProxy::ReadValue(
     std::map<std::string, sdbus::Variant> options) const {
-/*TODO*/
+    // TODO: Verify this destination will surely be having this characteristic
+    auto result = vector<u8>();
+    const auto CHARACTERISTIC_IFACE = "org.bluez.GattCharacteristic1";
+    this->_proxy->callMethod("ReadValue")
+        .onInterface(CHARACTERISTIC_IFACE)
+        .withArguments(options)
+        .storeResultsTo(result);
+
+    return result;
 }
 
 void CharacteristicProxy::WriteValue(
     std::vector<u8> value, std::map<std::string, sdbus::Variant> options) {
-/*TODO*/
+    // TODO: Verify this destination will surely be having this characteristic
+    const auto CHARACTERISTIC_IFACE = "org.bluez.GattCharacteristic1";
+    this->_proxy->callMethod("ReadValue")
+        .onInterface(CHARACTERISTIC_IFACE)
+        .withArguments(value, options);
 }
 
 std::string CharacteristicProxy::getPath() const {
