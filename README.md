@@ -6,15 +6,9 @@
 
 ## Initiating
 
+> I won't maintain it anymore, so this will remain at this stage
+
 * File transfer (Sender) using bluetooth protocol
-* Audio transmission (eg to bluetooth speaker)
-* Audio Receiver (eg. receive audio from mobile and play on internal speaker)
-
-> Additional descriptive comments to be added at end
-
-## BLE
-
-> First priority
 
 ### BLE Peripheral
 
