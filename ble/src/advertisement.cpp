@@ -1,6 +1,7 @@
 #include <chrono>
 #include <iostream>
 #include <map>
+#include <string>
 #include <thread>
 
 #include "adapter.h"
@@ -11,6 +12,10 @@
 using std::cout, std::cerr, std::endl;
 
 void Advertisement::turnOnAdvertising() {
+    // Register object, an object needs to be unregistered before registering
+    // again, hence turnOnAdvertising must not be simultaneously called twice,
+    // though calling it after a turnOffAdvertising is safe
+    ad->finishRegistration();
     /**
      * @references:
      * 1. adapter-api.txt -> Discoverable[=true]
@@ -85,6 +90,7 @@ void Advertisement::turnOffAdvertising() {
         ->callMethod("UnregisterAdvertisement")
         .onInterface("org.bluez.LEAdvertisingManager1")
         .withArguments(sdbus::ObjectPath(ad->getObjectPath()));
+    ad->unregister();
 }
 
 /**
@@ -145,9 +151,17 @@ Advertisement::Advertisement(sdbus::IConnection &connection,
 
     ad->registerProperty("LocalName")
         .onInterface(AD_INTERFACE_NAME)
-        .withGetter([]() { return "Pehchana ?"; });
+        .withGetter([this]() {
+            /* it intentionally references advertised_name variable, so any
+             * change is visible here too, SEG FAULT is handled because,
+             * in case, this object is deleted, it also unregisters this object
+             * so this getter must not be called then*/
+            return this->advertised_name;
+        });
 
-    ad->finishRegistration();
+    // This ad object won't be registered now itself,
+    // turnOnAdvertising should be called, it is responsible for registering
+    // this object with DBus and with AdvertisementManager1
 
 #ifdef VERBOSE_DEBUG
     std::cout << "Created advertisement at path: " << ad->getObjectPath()
@@ -155,8 +169,14 @@ Advertisement::Advertisement(sdbus::IConnection &connection,
 #endif
 }
 
+void Advertisement::setAdvertisedName(const std::string &new_name) {
+    this->advertised_name = new_name;
+}
+
 /**
  * @brief Destroy the Advertisement object, and unregister advertisement
  *
  */
-Advertisement::~Advertisement() { turnOffAdvertising(); }
+Advertisement::~Advertisement() {
+    turnOffAdvertising();
+}

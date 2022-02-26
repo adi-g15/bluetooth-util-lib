@@ -1,0 +1,2 @@
+Can verify that the root object has been exported :)
+[Testcase] Will stop advertising after 1 seconds, for next tests to run

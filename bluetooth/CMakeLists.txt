@@ -22,7 +22,7 @@ target_include_directories(bluetooth PUBLIC include/)
 target_link_libraries(bluetooth PRIVATE sdbus-c++)
 
 add_executable(test_bluetooth "main.cpp")
-target_include_directories(test_bluetooth PRIVATE ../common)
+target_include_directories(test_bluetooth PRIVATE ../)
 
 # Note: Make a smaller test case, so sdbus-c++ can be removed from dependencies of dependents on `bluetooth`
 target_link_libraries(test_bluetooth PRIVATE bluetooth sdbus-c++)

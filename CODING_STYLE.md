@@ -1,3 +1,5 @@
+* A variable containing object path should be named as `var`_path, and the object proxy created using createProxy at that object path, should be named `var`... Some old code may not follow this, please report if so
+
 * Both .h and .cpp have comments
 * `check_for_errors()` instead of `error_check()`, function names should be verbs
 * 1. For public functions that user may call, use `camelCase`

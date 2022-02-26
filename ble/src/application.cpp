@@ -50,6 +50,9 @@ void Application::registerWithGattManager(std::string adapter_path) const {
         .withArguments(sdbus::ObjectPath(application->getObjectPath()),
                        std::map<std::string, sdbus::Variant>());
 
-    /* Clean up, event loop not needed by us */
+    /* TODO: @adig check if above function not returning early, if so we maybe
+     * stopping the event loop, and bluez will keep infinitly waiting for reply
+     */
+    /* Clean up, async event loop not needed by us */
     connection.leaveEventLoop();
 }

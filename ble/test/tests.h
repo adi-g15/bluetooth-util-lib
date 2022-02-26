@@ -2,6 +2,12 @@
  * @file tests.h
  * @brief Not automated tests, just manually checking if it 'not' fails
  *
+ * @bug Sometime it will stuck at "Can verify that the root object has been
+exported :) [Testcase] Will stop advertising after 1 seconds, for next tests to
+run Times up!
+"
+ * This is probably due to a leaveEventLoop() signal getting un noticed in
+multi threading
  */
 #pragma once
 
@@ -12,7 +18,11 @@
 #include <thread>
 #include <vector>
 
+#include "common/adapter.h"
+#include "common/declarations.h"
+
 #include "ble/advertisement.h"
+#include "ble/central.h"
 #include "ble/characteristic.h"
 #include "ble/peripheral.h"
 #include "ble/service.h"
@@ -61,13 +71,13 @@ class MyCorrectService : public Service {
                                  std::string UUID)
             : Characteristic(connection, service_path, index, UUID) {}
 
-        std::vector<uint8_t> ReadValue(
+        std::vector<u8> ReadValue(
             std::map<std::string, sdbus::Variant> options) const override {
             return {};
         }
 
         void
-        WriteValue(std::vector<uint8_t> value,
+        WriteValue(std::vector<u8> value,
                    std::map<std::string, sdbus::Variant> options) override {
             cout << "Kuchh write karo idhar\n";
         }
@@ -81,13 +91,13 @@ class MyCorrectService : public Service {
                                  std::string UUID)
             : Characteristic(connection, service_path, index, UUID) {}
 
-        std::vector<uint8_t> ReadValue(
+        std::vector<u8> ReadValue(
             std::map<std::string, sdbus::Variant> options) const override {
             return {};
         }
 
         void
-        WriteValue(std::vector<uint8_t> value,
+        WriteValue(std::vector<u8> value,
                    std::map<std::string, sdbus::Variant> options) override {
             cout << "Kuchh write karo idhar\n";
         }
@@ -95,6 +105,7 @@ class MyCorrectService : public Service {
 };
 
 void test_register_application(sdbus::IConnection &conn) {
+    cout << '\n' << __func__ << "\n========================" << endl;
     auto myapp = new MyApplication(conn, "/com/example");
 
     /* This service will intentionally fail to compile */
@@ -124,21 +135,24 @@ void test_register_application(sdbus::IConnection &conn) {
 }
 
 void test_start_advertising(sdbus::IConnection &conn) {
+    cout << '\n' << __func__ << "\n========================" << endl;
     std::thread([&conn]() {
-        std::cout << "[Testcase] Will stop advertising after 1 seconds, for "
+        std::cout << "[Testcase] Will stop advertising after 6 seconds, for "
                      "next tests to run"
                   << endl;
-        std::this_thread::sleep_for(std::chrono::seconds(1));
-        std::cout << "Times up!" << endl;
+        std::this_thread::sleep_for(std::chrono::seconds(6));
+        cout << "Changing name" << endl;
         conn.leaveEventLoop();
     }).detach();
 
     // ~/bluez-5.63/doc/advertising-api.txt
     auto advertisement = new Advertisement(conn);
+    advertisement->setAdvertisedName("Naya naam");
     advertisement->turnOnAdvertising();
 }
 
 void test_create_root_object(sdbus::IConnection &conn) {
+    cout << '\n' << __func__ << "\n========================" << endl;
     auto root_obj = sdbus::createObject(conn, "/");
     root_obj->registerProperty("name")
         .onInterface("me.adig.DBus.Properties")
@@ -149,12 +163,55 @@ void test_create_root_object(sdbus::IConnection &conn) {
     std::this_thread::sleep_for(std::chrono::seconds(1));
 }
 
-void test_func() {
-    auto conn = sdbus::createSystemBusConnection("me.adig.iotiot");
+void test_start_ble_scan(sdbus::IConnection &conn) {
+    cout << '\n' << __func__ << "\n========================" << endl;
+    startScanningForBLEDevices();
+    cout << "Started scan for BLE devices\n";
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    cout << "1\n";
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    cout << "2\n";
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    cout << "3\n";
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    cout << "4\n";
 
+    cout << "Finding available devices\n";
+    auto ble_devices = getAvailableBLEPeripherals();
+    cout << "Found device addresses:\n";
+    auto i = 0;
+    for (const auto &addr : ble_devices) {
+        cout << ++i << ": " << addr << '\n';
+    }
+}
+
+void test_turn_on_adapter() {
+    cout << '\n' << __func__ << "\n========================" << endl;
+    try {
+        tryPoweringOnAdapter();
+
+        cout << "IsAdaptorPoweredOn: " << isAdapterPoweredOn() << endl;
+    } catch (std::exception &e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+    }
+}
+
+void test_func() {
+    auto conn = sdbus::createSystemBusConnection(); //"me.adig"
+    cout << "Connection's unique name: " << conn->getUniqueName() << endl;
+
+    test_turn_on_adapter();
     test_create_root_object(*conn);
+
+    // peripheral
     test_start_advertising(*conn);
     test_register_application(*conn);
 
+    // central
+    test_start_ble_scan(*conn);
+
+    cout << "Going to infinite wait... can close or use gdbus/dbus-send to "
+            "introspect the above unique name"
+         << endl;
     conn->enterEventLoop();
 }

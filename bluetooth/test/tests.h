@@ -10,16 +10,17 @@
 #include <cstdint>
 #include <cstdlib>
 #include <exception>
-#include <ios>
 #include <iostream>
 #include <map>
-#include <ostream>
 #include <regex>
 #include <stdexcept>
 #include <string>
+#include <thread>
 #include <vector>
 
-#include "adapter.h"
+#include "common/adapter.h"
+#include "common/declarations.h"
+
 #include "bluetooth/functions.h"
 
 #include "sdbus-c++/sdbus-c++.h"
@@ -36,6 +37,8 @@ const auto DEFAULT_ADAPTER_PATH = "/org/bluez/hci0";
  */
 void test_connect_to_device(string address,
                             string adapter_path = DEFAULT_ADAPTER_PATH) {
+    cout << '\n' << __func__ << "\n========================" << endl;
+    cout << "Connecting to " << address << endl;
     connect_to_device_using_address(address, adapter_path);
 }
 
@@ -46,19 +49,25 @@ void test_connect_to_device(string address,
  */
 void test_disconnect_from_device(string address,
                                  string adapter_path = DEFAULT_ADAPTER_PATH) {
+    cout << '\n' << __func__ << "\n========================" << endl;
+    cout << "Disconnecting from " << address << endl;
     disconnect_from_device_using_address(address, adapter_path);
 }
 
 void test_get_device_address(std::string device_name) {
-    get_device_address_by_name(device_name);
+    cout << '\n' << __func__ << "\n========================" << endl;
+    cout << "Got device address: " << get_device_address_by_name(device_name)
+         << endl;
 }
 
 void test_get_adapter_powered_status() {
+    cout << '\n' << __func__ << "\n========================" << endl;
     std::cout << "Is adapter powered: " << std::boolalpha
               << isAdapterPoweredOn() << std::endl;
 }
 
 void test_print_adapter_details() {
+    cout << '\n' << __func__ << "\n========================" << endl;
     auto adapter = sdbus::createProxy(BLUEZ_DBUS_NAME, DEFAULT_ADAPTER_PATH);
 
     // GetAll
@@ -75,7 +84,7 @@ void test_print_adapter_details() {
         if (type == "s") {
             cout << p.second.get<std::string>();
         } else if (type == "u") {
-            cout << p.second.get<uint32_t>();
+            cout << p.second.get<u32>();
         } else if (type == "b") {
             cout << std::boolalpha << p.second.get<bool>();
         } else if (type == "as") {
@@ -94,6 +103,7 @@ void test_print_adapter_details() {
 }
 
 void test_turn_on_adapter() {
+    cout << '\n' << __func__ << "\n========================" << endl;
     try {
         tryPoweringOnAdapter();
     } catch (std::exception &e) {
@@ -101,6 +111,7 @@ void test_turn_on_adapter() {
     }
 }
 void test_get_all_managed_objects() {
+    cout << '\n' << __func__ << "\n========================" << endl;
     auto result =
         std::map<sdbus::ObjectPath,
                  std::map<string, std::map<string, sdbus::Variant>>>();
@@ -135,24 +146,38 @@ void test_get_all_managed_objects() {
     }
 }
 
-void test_look_for_new_devices() {
-    // TODO
+void test_send_file() {
+    cout << '\n' << __func__ << "\n========================" << endl;
+    string name;
+    cout << "Enter device name capable of recieving files (can be a substring, "
+            "case-insensitive): \n";
+    cin >> name;
+    string addr = get_device_address_by_name(name);
+    cout << "Sending file: /etc/fstab to " << addr << " (" << name << ")"
+         << endl;
+    sendFile(addr /*"30:4B:07:72:25:A4"*/, "/etc/fstab");
 }
 
-void test_send_file() { sendFile("30:4B:07:72:25:A4", "/etc/fstab"); }
-
 void test_func() {
+    cout << "Tests wont handle most exceptions\n";
+
     test_get_adapter_powered_status();
     test_turn_on_adapter();
     test_print_adapter_details();
     test_get_all_managed_objects();
 
-    test_get_device_address("Rockerz 450");
-    test_connect_to_device("11:11:22:AF:5F:70");
-    test_disconnect_from_device("11:11:22:AF:5F:70");
+    string name;
+    cout << "Enter device name (can be a substring, case-insensitive): \n";
+    cin >> name;
+    test_get_device_address(name /*"Rockerz 450"*/);
+    string addr = get_device_address_by_name(name);
+    test_connect_to_device(addr /*"11:11:22:AF:5F:70"*/);
 
-    // blocking
-    test_look_for_new_devices();
+    cout << "Waiting for 4 seconds, can verify connection..." << endl;
+    std::this_thread::sleep_for(std::chrono::seconds(4));
+    test_disconnect_from_device(addr /*"11:11:22:AF:5F:70"*/);
 
     test_send_file();
+
+    cout << "Tests complete...";
 }

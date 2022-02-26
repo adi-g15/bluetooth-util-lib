@@ -13,9 +13,9 @@
 #include <map>
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "declarations.h"
-#include "sdbus-c++/IObject.h"
 #include "sdbus-c++/sdbus-c++.h"
 
 /**
@@ -40,14 +40,15 @@ class Characteristic {
      * 1. gatt-api.txt -> GattCharacteristic1 <Confirm(), Flags>
      */
 
-    public:
+  public:
     /* ReadValue and WriteValue functions must be implemented by the class that
      * implements this Characteristic interface*/
-    virtual std::vector<uint8_t>
-    ReadValue(std::map<std::string, sdbus::Variant> options) const = 0;
+    virtual std::vector<u8>
+    ReadValue(std::map<std::string, sdbus::Variant> options = {}) const = 0;
 
-    virtual void WriteValue(std::vector<uint8_t> value,
-                            std::map<std::string, sdbus::Variant> options) = 0;
+    virtual void
+    WriteValue(std::vector<u8> value,
+               std::map<std::string, sdbus::Variant> options = {}) = 0;
 
     /* Optional functions */
     virtual void StartNotify(){};
@@ -60,5 +61,34 @@ class Characteristic {
 
     std::string getObjectPath() const;
 
-    virtual ~Characteristic() { /*Nothing to do*/ }
+    virtual ~Characteristic() { /*Nothing to do*/
+    }
+};
+
+/**
+ * @brief Proxy class to call methods on a Characteristic such as ReadValue,
+ * WriteValue etc
+ *
+ * @note It is different than the above `Characteristic` class as that class
+ * 'implements' a characteristic and so it is implemented on this system, and is
+ * should be used by only the peripheral.
+ * While this is a proxy to an already
+ * existing characteristic provided by some other remote device
+ */
+class CharacteristicProxy {
+    /*No support for descripters for now*/
+  private:
+    std::unique_ptr<sdbus::IProxy> _proxy;
+
+  public:
+    CharacteristicProxy(sdbus::IConnection &connection, std::string path);
+
+    /* ReadValue and WriteValue functions provided by the characteristic */
+    std::vector<u8>
+    ReadValue(std::map<std::string, sdbus::Variant> options = {}) const;
+
+    void WriteValue(std::vector<u8> value,
+                    std::map<std::string, sdbus::Variant> options = {});
+
+    std::string getPath() const;
 };
