@@ -105,6 +105,7 @@ class MyCorrectService : public Service {
 };
 
 void test_register_application(sdbus::IConnection &conn) {
+    cout << '\n' << __func__ << "\n========================" << endl;
     auto myapp = new MyApplication(conn, "/com/example");
 
     /* This service will intentionally fail to compile */
@@ -134,6 +135,7 @@ void test_register_application(sdbus::IConnection &conn) {
 }
 
 void test_start_advertising(sdbus::IConnection &conn) {
+    cout << '\n' << __func__ << "\n========================" << endl;
     std::thread([&conn]() {
         std::cout << "[Testcase] Will stop advertising after 6 seconds, for "
                      "next tests to run"
@@ -150,6 +152,7 @@ void test_start_advertising(sdbus::IConnection &conn) {
 }
 
 void test_create_root_object(sdbus::IConnection &conn) {
+    cout << '\n' << __func__ << "\n========================" << endl;
     auto root_obj = sdbus::createObject(conn, "/");
     root_obj->registerProperty("name")
         .onInterface("me.adig.DBus.Properties")
@@ -161,7 +164,9 @@ void test_create_root_object(sdbus::IConnection &conn) {
 }
 
 void test_start_ble_scan(sdbus::IConnection &conn) {
+    cout << '\n' << __func__ << "\n========================" << endl;
     startScanningForBLEDevices();
+    cout << "Started scan for BLE devices\n";
     std::this_thread::sleep_for(std::chrono::seconds(1));
     cout << "1\n";
     std::this_thread::sleep_for(std::chrono::seconds(1));
@@ -170,19 +175,30 @@ void test_start_ble_scan(sdbus::IConnection &conn) {
     cout << "3\n";
     std::this_thread::sleep_for(std::chrono::seconds(1));
     cout << "4\n";
-    getAvailableBLEPeripherals();
+
+    cout << "Finding available devices\n";
+    auto ble_devices = getAvailableBLEPeripherals();
+    cout << "Found device addresses:\n";
+    auto i = 0;
+    for (const auto &addr : ble_devices) {
+        cout << ++i << ": " << addr << '\n';
+    }
 }
 
 void test_turn_on_adapter() {
+    cout << '\n' << __func__ << "\n========================" << endl;
     try {
         tryPoweringOnAdapter();
+
+        cout << "IsAdaptorPoweredOn: " << isAdapterPoweredOn() << endl;
     } catch (std::exception &e) {
         std::cerr << "Error: " << e.what() << std::endl;
     }
 }
 
 void test_func() {
-    auto conn = sdbus::createSystemBusConnection("me.adig.iotiot");
+    auto conn = sdbus::createSystemBusConnection(); //"me.adig"
+    cout << "Connection's unique name: " << conn->getUniqueName() << endl;
 
     test_turn_on_adapter();
     test_create_root_object(*conn);
@@ -194,5 +210,8 @@ void test_func() {
     // central
     test_start_ble_scan(*conn);
 
+    cout << "Going to infinite wait... can close or use gdbus/dbus-send to "
+            "introspect the above unique name"
+         << endl;
     conn->enterEventLoop();
 }

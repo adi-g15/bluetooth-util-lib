@@ -6,9 +6,28 @@
  * @return vector<string> Array of bluetooth device addresses
  */
 vector<string> getAvailableBLEPeripherals() {
-    /* TODO- This may return non-ble devices with ObjectManager, handle it
+    /* TODO- This may return non-ble devices with ObjectManager, despite
+     * starting the scan for LE transport only, handle it
      */
-    return {};
+    auto result =
+        std::map<sdbus::ObjectPath,
+                 std::map<string, std::map<string, sdbus::Variant>>>();
+    auto adapter = sdbus::createProxy("org.bluez", "/");
+    adapter->callMethod("GetManagedObjects")
+        .onInterface("org.freedesktop.DBus.ObjectManager")
+        .storeResultsTo(result);
+
+    vector<string> addresses;
+    for (auto &p : result) {
+        if (p.first.find("/org/bluez/hci0/dev_") == 0 &&
+            p.first.length() ==
+                sizeof("/org/bluez/hci0/dev_XX_XX_XX_XX_XX_XX") - 1) {
+            addresses.push_back(
+                p.second["org.bluez.Device1"]["Address"].get<string>());
+        }
+    }
+
+    return addresses;
 }
 
 /**
