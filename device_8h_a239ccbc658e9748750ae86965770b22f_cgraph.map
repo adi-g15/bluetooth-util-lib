@@ -1,0 +1,5 @@
+<map id="connect_to_device_using_name" name="connect_to_device_using_name">
+<area shape="rect" id="node1" title=" " alt="" coords="5,46,235,73"/>
+<area shape="rect" id="node2" href="$device_8h.html#a1cf9ea1c88831806f21905c53c8a50df" title="Connect to device." alt="" coords="283,5,468,47"/>
+<area shape="rect" id="node3" href="$device_8h.html#a4f5f8c38167c17d6e8c54dcbf60e7e0d" title="Get the device address using the device&#39;s name." alt="" coords="300,71,451,112"/>
+</map>

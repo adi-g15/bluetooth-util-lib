@@ -1,0 +1,13 @@
+<map id="ble/include/ble/central.h" name="ble/include/ble/central.h">
+<area shape="rect" id="node1" title="Interfaces for BLE central devices." alt="" coords="198,5,377,32"/>
+<area shape="rect" id="node2" title=" " alt="" coords="68,155,148,181"/>
+<area shape="rect" id="node3" title=" " alt="" coords="24,80,100,107"/>
+<area shape="rect" id="node4" title=" " alt="" coords="125,80,184,107"/>
+<area shape="rect" id="node5" title=" " alt="" coords="208,80,271,107"/>
+<area shape="rect" id="node6" href="$adapter_8h.html" title="Common functions/utilities for both &#39;usual&#39; bluetooth and ble connections." alt="" coords="296,80,378,107"/>
+<area shape="rect" id="node9" title=" " alt="" coords="403,80,543,107"/>
+<area shape="rect" id="node10" title=" " alt="" coords="568,80,717,107"/>
+<area shape="rect" id="node11" title=" " alt="" coords="741,80,888,107"/>
+<area shape="rect" id="node7" title=" " alt="" coords="214,155,300,181"/>
+<area shape="rect" id="node8" title=" " alt="" coords="324,155,507,181"/>
+</map>

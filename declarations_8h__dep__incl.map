@@ -1,0 +1,10 @@
+<map id="common/declarations.h" name="common/declarations.h">
+<area shape="rect" id="node1" title=" " alt="" coords="368,5,543,32"/>
+<area shape="rect" id="node2" href="$characteristic_8h.html" title="Characteristic class representing BLE device Characteristic." alt="" coords="178,80,399,107"/>
+<area shape="rect" id="node5" href="$peripheral_8h.html" title="A &#39;include all header&#39; of functions related to BLE peripherals." alt="" coords="5,304,204,331"/>
+<area shape="rect" id="node6" href="$application_8cpp.html" title=" " alt="" coords="367,304,535,331"/>
+<area shape="rect" id="node7" href="$service_8cpp.html" title="Implementation of Service class representing BLE device services." alt="" coords="409,229,552,256"/>
+<area shape="rect" id="node3" href="$service_8h.html" title="Service class representing BLE device services." alt="" coords="321,155,501,181"/>
+<area shape="rect" id="node8" href="$characteristic_8cpp.html" title="Implementation of Characteristic class representing BLE device Characteristic." alt="" coords="113,155,297,181"/>
+<area shape="rect" id="node4" href="$application_8h.html" title=" " alt="" coords="179,229,385,256"/>
+</map>

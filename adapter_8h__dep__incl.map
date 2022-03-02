@@ -1,0 +1,7 @@
+<map id="common/adapter.h" name="common/adapter.h">
+<area shape="rect" id="node1" title="Common functions/utilities for both &#39;usual&#39; bluetooth and ble connections." alt="" coords="232,5,376,32"/>
+<area shape="rect" id="node2" href="$central_8h.html" title="Interfaces for BLE central devices." alt="" coords="5,80,184,107"/>
+<area shape="rect" id="node4" href="$advertisement_8cpp.html" title=" " alt="" coords="209,80,399,107"/>
+<area shape="rect" id="node5" href="$application_8cpp.html" title=" " alt="" coords="424,80,592,107"/>
+<area shape="rect" id="node3" href="$central_8cpp.html" title=" " alt="" coords="24,155,165,181"/>
+</map>
