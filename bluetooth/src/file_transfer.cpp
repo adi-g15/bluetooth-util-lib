@@ -39,8 +39,8 @@ namespace fs = std::filesystem;
  * @param local_filepath Filepath of the file to send, this can be a relative
  * path or an absolute path
  */
-void sendFile(const string &remote_device_address,
-              const string &local_filepath) {
+void sendFile(const std::string &remote_device_address,
+              const std::string &local_filepath) {
 
     /* Get a connection to 'session bus', and start an event loop asynchronously
      * to catch signals, while we call methods on objects in this thread */
