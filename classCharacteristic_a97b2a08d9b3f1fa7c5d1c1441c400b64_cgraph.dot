@@ -1,0 +1,16 @@
+digraph "Characteristic::Characteristic"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  rankdir="LR";
+  Node1 [label="Characteristic::Characteristic",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip=" "];
+  Node1 -> Node2 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="Characteristic::ReadValue",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classCharacteristic.html#a618faab5e0910f39b385a4518f1120eb",tooltip=" "];
+  Node1 -> Node3 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="Characteristic::StartNotify",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classCharacteristic.html#a0e29075f49bc48898eb44cf0e0ae00d3",tooltip=" "];
+  Node1 -> Node4 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="Characteristic::StopNotify",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classCharacteristic.html#a2e094eea0e78104c248581132bfa4bbb",tooltip=" "];
+  Node1 -> Node5 [color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="Characteristic::WriteValue",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$classCharacteristic.html#a1fbf36e14548008f80c922604e568269",tooltip=" "];
+}

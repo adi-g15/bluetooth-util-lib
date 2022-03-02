@@ -1,0 +1,15 @@
+digraph "common/adapter.h"
+{
+ // LATEX_PDF_SIZE
+  edge [fontname="Helvetica",fontsize="10",labelfontname="Helvetica",labelfontsize="10"];
+  node [fontname="Helvetica",fontsize="10",shape=record];
+  Node1 [label="common/adapter.h",height=0.2,width=0.4,color="black", fillcolor="grey75", style="filled", fontcolor="black",tooltip="Common functions/utilities for both 'usual' bluetooth and ble connections."];
+  Node1 -> Node2 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node2 [label="ble/include/ble/central.h",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$central_8h.html",tooltip="Interfaces for BLE central devices."];
+  Node2 -> Node3 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node3 [label="ble/src/central.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$central_8cpp.html",tooltip=" "];
+  Node1 -> Node4 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node4 [label="ble/src/advertisement.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$advertisement_8cpp.html",tooltip=" "];
+  Node1 -> Node5 [dir="back",color="midnightblue",fontsize="10",style="solid",fontname="Helvetica"];
+  Node5 [label="ble/src/application.cpp",height=0.2,width=0.4,color="black", fillcolor="white", style="filled",URL="$application_8cpp.html",tooltip=" "];
+}

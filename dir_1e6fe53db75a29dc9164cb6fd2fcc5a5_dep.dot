@@ -1,0 +1,12 @@
+digraph "bluetooth" {
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  subgraph clusterdir_1e6fe53db75a29dc9164cb6fd2fcc5a5 {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_1e6fe53db75a29dc9164cb6fd2fcc5a5.html"];
+    dir_1e6fe53db75a29dc9164cb6fd2fcc5a5 [shape=plaintext label="bluetooth"];
+    dir_ef816cf728417de558d51921fcd87ff9 [shape=box label="include" color="red" fillcolor="white" style="filled" URL="dir_ef816cf728417de558d51921fcd87ff9.html"];
+    dir_b034527aee1b0a6c4069a6931de6a5f8 [shape=box label="src" color="black" fillcolor="white" style="filled" URL="dir_b034527aee1b0a6c4069a6931de6a5f8.html"];
+  }
+  dir_b034527aee1b0a6c4069a6931de6a5f8->dir_ef816cf728417de558d51921fcd87ff9 [headlabel="1", labeldistance=1.5 headhref="dir_000007_000005.html"];
+}
